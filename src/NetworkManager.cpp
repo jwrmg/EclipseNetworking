@@ -3,6 +3,8 @@ namespace Eclipse
 {
 	namespace Networking
 	{
+		NetworkManager* NetworkManager::Instance = nullptr;
+
 		void NetworkManager::onIncomingConnection(EclipsePacket& packet){}
 
 		void NetworkManager::onIncomingDisconnection(EclipsePacket& packet){}
@@ -46,6 +48,20 @@ namespace Eclipse
 		{
 			onConnectionLost(packet);
 			OnClientLeave.Invoke(packet);
+		}
+
+		void NetworkManager::Reset(){}
+
+		void NetworkManager::Deleted()
+		{
+			delete Instance;
+		}
+
+		void NetworkManager::Created()
+		{
+			if (!Instance)
+				Instance = this;
+			else delete this;
 		}
 	}
 }

@@ -21,6 +21,10 @@ namespace Eclipse
 			public Components::Component
 		{
 		public:
+
+			// singleton instance.
+			static NetworkManager* Instance;
+
 			// Default Types
 			bool isNetworkActive;
 			std::string networkAddress = "localhost";
@@ -57,6 +61,10 @@ namespace Eclipse
 			void _onIncomingConnection(EclipsePacket& packet);
 			void _onIncomingDisconnection(EclipsePacket& packet);
 			void _onConnectionLost(EclipsePacket& packet);
+		protected:
+			void Reset() override;
+			void Deleted() final;
+			void Created() final;
 		};
 	}
 }
