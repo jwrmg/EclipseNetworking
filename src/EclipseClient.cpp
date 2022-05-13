@@ -16,7 +16,7 @@ namespace Eclipse
 		void EclipseClient::Send(EclipsePacket& packet, char orderingChannel, const RakNet::AddressOrGUID& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber)
 		{
 			// send packet to server.
-			peerInterface->Send(&packet.stream_, packet.priority, packet.reliability, orderingChannel, systemIdentifier, broadcast, forceReceiptNumber);
+			peerInterface->Send(packet.stream_.get(), packet.priority, packet.reliability, orderingChannel, systemIdentifier, broadcast, forceReceiptNumber);
 		}
 
 		void EclipseClient::InitializeClientConnection()
@@ -24,9 +24,9 @@ namespace Eclipse
 			m_handler_.InitializeHandler();
 			m_handler_.SetClient(this);
 
-			m_handler_.OnPacketReceived.emplace((unsigned)TestId::Test, new Engine::EclipseEvent<const EclipsePacket&>);
+			m_handler_.OnPacketReceived.emplace((unsigned)TestId::Test, new Engine::EclipseEvent<EclipsePacket&>);
 
-			*m_handler_.GetReceivedHandle((unsigned)TestId::Test) += [](const EclipsePacket& packet)
+			*m_handler_.GetReceivedHandle((unsigned)TestId::Test) += [](EclipsePacket& packet)
 			{
 				std::cout << &packet.m_packet_->data << std::endl;
 			};
