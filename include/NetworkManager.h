@@ -43,6 +43,8 @@ namespace Eclipse
 			Engine::EclipseEvent<EclipsePacket&> OnStart = {};
 			Engine::EclipseEvent<EclipsePacket&> OnStop = {};
 
+			void SendPacket(const EclipsePacket* packet, char orderingChannel, const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber) const;
+
 			virtual void StartProcess() = 0;
 			virtual void StopProcess() = 0;
 

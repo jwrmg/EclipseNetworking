@@ -5,11 +5,17 @@ namespace Eclipse
 	{
 		NetworkManager* NetworkManager::Instance = nullptr;
 
-		void NetworkManager::onIncomingConnection(EclipsePacket& packet){}
+		void NetworkManager::onIncomingConnection(EclipsePacket& packet) {}
 
-		void NetworkManager::onIncomingDisconnection(EclipsePacket& packet){}
+		void NetworkManager::onIncomingDisconnection(EclipsePacket& packet) {}
+		 
+		void NetworkManager::onConnectionLost(EclipsePacket& packet) {}
 
-		void NetworkManager::onConnectionLost(EclipsePacket& packet){}
+		void NetworkManager::SendPacket(const EclipsePacket* packet, char orderingChannel,
+			const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber) const
+		{
+			networkInterfaceInstance->Send(packet->stream_.get(), packet->priority, packet->reliability, orderingChannel, systemIdentifier, broadcast, forceReceiptNumber);
+		}
 
 		void NetworkManager::Update()
 		{
@@ -50,7 +56,7 @@ namespace Eclipse
 			OnClientLeave.Invoke(packet);
 		}
 
-		void NetworkManager::Reset(){}
+		void NetworkManager::Reset() {}
 
 		void NetworkManager::Deleted()
 		{
