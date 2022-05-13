@@ -8,17 +8,15 @@ namespace Eclipse
 		{
 			m_packet_ = packet;
 			categoryId_ = packet->data[0];
-			//const RakNet::BitStream bs(packet->data, packet->length, true);
 
-			for (int i = 0; i < packet->length; i++)
-			{
-				stream_ << packet->data[i];
-			}
+			stream_ = std::make_shared<RakNet::BitStream>(packet->data, packet->length, true);
 		}
 
 		EclipsePacket::EclipsePacket(unsigned char categoryId)
 		{
 			categoryId_ = categoryId;
+			stream_ = std::make_shared<RakNet::BitStream>();
+
 			Write<unsigned char>(categoryId_);
 			//Write<bool>(false);
 		}
@@ -27,6 +25,8 @@ namespace Eclipse
 		{
 			categoryId_ = categoryId;
 			specialId_ = specialId;
+			stream_ = std::make_shared<RakNet::BitStream>();
+
 			Write<unsigned char>(categoryId_);
 			//Write<bool>(true);
 			//Write<u_short>(specialId_);
@@ -37,7 +37,9 @@ namespace Eclipse
 			categoryId_ = other.categoryId_;
 			specialId_ = other.specialId_;
 			m_packet_ = other.m_packet_;
-			stream_.SetData(other.stream_.GetData());
+			stream_ = other.stream_;
+
+			//stream_.SetData(other.stream_.GetData());
 		}
 	}
 }

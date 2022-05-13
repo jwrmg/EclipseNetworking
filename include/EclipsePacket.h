@@ -19,7 +19,7 @@ namespace Eclipse
 			u_short specialId_ = -1;
 			bool async = false;
 			RakNet::Packet* m_packet_ = nullptr;
-			RakNet::BitStream stream_ = {};
+			std::shared_ptr<RakNet::BitStream> stream_ = nullptr;
 
 			PacketPriority priority = LOW_PRIORITY;
 			PacketReliability reliability = RELIABLE;
@@ -27,14 +27,14 @@ namespace Eclipse
 			template<typename T>
 			void Write(T data)
 			{
-				stream_.Write<T>(data);
+				stream_->Write<T>(data);
 			}
 
 			template<typename T>
 			void ReadNonAlloc(T& dataBuffer)
 			{
 				const char* buffer;
-				stream_.Read(buffer, sizeof(T));
+				stream_->Read(buffer, sizeof(T));
 				dataBuffer = reinterpret_cast<T>(buffer);
 			}
 
@@ -42,7 +42,7 @@ namespace Eclipse
 			T Read()
 			{
 				T data;
-				stream_.Read<T>(data);
+				stream_->Read<T>(data);
 				return data;
 			}
 		
