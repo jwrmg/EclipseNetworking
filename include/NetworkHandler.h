@@ -14,10 +14,10 @@ namespace Eclipse
 		{
 		public:
 			void InitializeHandler();
-			void Receive(const EclipsePacket& packet);
+			void Receive(EclipsePacket& packet);
 
-			Engine::EclipseEvent<const EclipsePacket&>* GetReceivedHandle(unsigned int);
-			Engine::EclipseEvent<const EclipsePacket&>* GetSentHandle(unsigned int);
+			Engine::EclipseEvent<EclipsePacket&>* GetReceivedHandle(unsigned int);
+			Engine::EclipseEvent<EclipsePacket&>* GetSentHandle(unsigned int);
 
 			// TODO: AddNewIDHandle
 			//void AddNewIdHandle(unsigned int id);
@@ -25,8 +25,8 @@ namespace Eclipse
 
 			unsigned int GenDynID();
 			unsigned int GenDynID(const std::string& hashName);
-			std::unordered_map<unsigned int, Engine::EclipseEvent<const EclipsePacket&>*> OnPacketReceived = {};
-			std::unordered_map<unsigned int, Engine::EclipseEvent<const EclipsePacket&>*> OnPacketSent = {};
+			std::unordered_map<unsigned int, Engine::EclipseEvent<EclipsePacket&>*> OnPacketReceived = {};
+			std::unordered_map<unsigned int, Engine::EclipseEvent<EclipsePacket&>*> OnPacketSent = {};
 		private:
 			int _dynIdCount = 0;
 			unsigned int _idCount = ID_USER_PACKET_ENUM;

@@ -1,19 +1,21 @@
 #include "NetworkHandler.h"
 
+#include "NetworkIdentifiers.h"
+
 namespace Eclipse
 {
 	namespace Networking
 	{
 		void NetworkHandler::InitializeHandler()
 		{
-			for (unsigned int i = 0; i < (unsigned int)ID_USER_PACKET_ENUM; i++)
+			for (unsigned int i = 0; i < (unsigned int)NetworkIdentifiers::EID_USER_PACKET_ENUM; i++)
 			{
-				OnPacketReceived.emplace(i, new Engine::EclipseEvent<const EclipsePacket&>);
-				OnPacketSent.emplace(i, new Engine::EclipseEvent<const EclipsePacket&>);
+				OnPacketReceived.emplace(i, new Engine::EclipseEvent<EclipsePacket&>);
+				OnPacketSent.emplace(i, new Engine::EclipseEvent<EclipsePacket&>);
 			}
 		}
 
-		void NetworkHandler::Receive(const EclipsePacket& packet)
+		void NetworkHandler::Receive(EclipsePacket& packet)
 		{
 			// scope to this.
 			EclipsePacket pkt = packet;
@@ -23,12 +25,12 @@ namespace Eclipse
 			OnPacketReceived[id]->Invoke(packet);
 		}
 
-		Engine::EclipseEvent<const EclipsePacket&>* NetworkHandler::GetReceivedHandle(unsigned id)
+		Engine::EclipseEvent<EclipsePacket&>* NetworkHandler::GetReceivedHandle(unsigned id)
 		{
 			return OnPacketReceived[id];
 		}
 
-		Engine::EclipseEvent<const EclipsePacket&>* NetworkHandler::GetSentHandle(unsigned id)
+		Engine::EclipseEvent<EclipsePacket&>* NetworkHandler::GetSentHandle(unsigned id)
 		{
 			return OnPacketSent[id];
 		}
