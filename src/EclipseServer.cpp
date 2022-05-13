@@ -19,7 +19,7 @@ namespace Eclipse
 
 		void EclipseServer::Send(EclipsePacket* packet, char orderingChannel, const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber)
 		{
-			peerInterface->Send(&packet->stream_, packet->priority, packet->reliability, orderingChannel, systemIdentifier, broadcast, forceReceiptNumber);
+			peerInterface->Send(packet->stream_.get(), packet->priority, packet->reliability, orderingChannel, systemIdentifier, broadcast, forceReceiptNumber);
 		}
 
 		void EclipseServer::HandleNetworkMessages()
