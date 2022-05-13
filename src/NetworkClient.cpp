@@ -6,8 +6,9 @@ namespace Eclipse
 {
 	namespace Networking
 	{
-		void NetworkClient::Reset()
+		void NetworkClient::SendToServer(const EclipsePacket* packet, char orderingChannel, uint32_t forceReceiptNumber)
 		{
+			networkInterfaceInstance->Send(packet->stream_.get(), packet->priority, packet->reliability, orderingChannel, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true, forceReceiptNumber);
 		}
 
 		void NetworkClient::StartProcess()
@@ -56,5 +57,7 @@ namespace Eclipse
 
 			hostServer = RakNet::SystemAddress(uri.c_str());
 		}
+
+		void NetworkClient::Reset(){}
 	}
 }
