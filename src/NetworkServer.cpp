@@ -42,6 +42,15 @@ namespace Eclipse
 			}
 		}
 
+		void NetworkServer::SendPacketToAll(const EclipsePacket* packet, char orderingChannel,
+			bool broadcast, uint32_t forceReceiptNumber) const
+		{
+			for(const RakNet::SystemAddress& client : ConnectedClients)
+			{
+				SendPacket(packet, orderingChannel, client, broadcast, forceReceiptNumber);
+			}
+		}
+
 		void NetworkServer::StartProcess()
 		{
 			networkManagerType = NetworkManagerType::Server;
