@@ -76,7 +76,7 @@ namespace Eclipse
 		{
 			if (sender)
 			{
-				sender->Send(&packet->stream_, packet->priority, packet->reliability, orderingChannel, systemIdentifier, broadcast, forceReceiptNumber);
+				sender->Send(packet->stream_.get(), packet->priority, packet->reliability, orderingChannel, systemIdentifier, broadcast, forceReceiptNumber);
 			}
 		}
 	}
