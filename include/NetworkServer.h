@@ -13,6 +13,7 @@ namespace Eclipse
 			unsigned short maxConnections = 32;
 
 			void SendPacketToAll(const EclipsePacket* packet, char orderingChannel, bool broadcast, uint32_t forceReceiptNumber) const;
+			void SendPacketToAll(const EclipsePacket* packet, char orderingChannel, bool broadcast, uint32_t forceReceiptNumber, std::vector<RakNet::SystemAddress> filter) const;
 			
 			void StartProcess() override;
 			void StopProcess() override;

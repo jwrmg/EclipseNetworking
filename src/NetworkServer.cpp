@@ -45,9 +45,19 @@ namespace Eclipse
 		void NetworkServer::SendPacketToAll(const EclipsePacket* packet, char orderingChannel,
 			bool broadcast, uint32_t forceReceiptNumber) const
 		{
-			for(const RakNet::SystemAddress& client : ConnectedClients)
+			SendPacketToAll(packet, orderingChannel, broadcast, forceReceiptNumber, {});
+		}
+
+		void NetworkServer::SendPacketToAll(const EclipsePacket* packet, char orderingChannel, bool broadcast,
+			uint32_t forceReceiptNumber, std::vector<RakNet::SystemAddress> filters) const
+		{
+			for (const RakNet::SystemAddress& client : ConnectedClients)
 			{
-				SendPacket(packet, orderingChannel, client, broadcast, forceReceiptNumber);
+				for (const RakNet::SystemAddress& filter : filters)
+				{
+					if (client != filter)
+						SendPacket(packet, orderingChannel, client, broadcast, forceReceiptNumber);
+				}
 			}
 		}
 
