@@ -37,13 +37,13 @@ namespace Eclipse
 			m_handler_.InitializeHandler();
 			m_handler_.SetServer(this);
 
-			*m_handler_.GetReceivedHandle(ID_NEW_INCOMING_CONNECTION) += [=](EclipsePacket packet)
+			*m_handler_.OnPacketReceived[ID_NEW_INCOMING_CONNECTION] += [=](auto packet)
 			{
 				std::cout << "A connection from " << packet.m_packet_->systemAddress.ToString(true) << std::endl;
 				connectedClients.emplace_back(packet.m_packet_->systemAddress);
 			};
-			*m_handler_.GetReceivedHandle(ID_DISCONNECTION_NOTIFICATION) += [](auto packet) {std::cout << "A client has disconnected.\n"; };
-			*m_handler_.GetReceivedHandle(ID_CONNECTION_LOST) += [](auto packet) {std::cout << "A client lost the connection.\n"; };
+			*m_handler_.OnPacketReceived[ID_DISCONNECTION_NOTIFICATION] += [](auto packet) {std::cout << "A client has disconnected.\n"; };
+			*m_handler_.OnPacketReceived[ID_CONNECTION_LOST] += [](auto packet) {std::cout << "A client lost the connection.\n"; };
 
 			peerInterface = RakNet::RakPeerInterface::GetInstance();
 			RakNet::SocketDescriptor sd(PORT, 0);

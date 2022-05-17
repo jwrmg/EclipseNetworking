@@ -24,9 +24,9 @@ namespace Eclipse
 			m_handler_.InitializeHandler();
 			m_handler_.SetClient(this);
 
-			m_handler_.OnPacketReceived.emplace((unsigned)TestId::Test, new Engine::EclipseEvent<EclipsePacket&>);
+			m_handler_.OnPacketReceived.AddEvent((unsigned)TestId::Test, new Engine::EclipseEvent<EclipsePacket&>);
 
-			*m_handler_.GetReceivedHandle((unsigned)TestId::Test) += [](EclipsePacket& packet)
+			*m_handler_.OnPacketReceived[(unsigned)TestId::Test] += [](EclipsePacket& packet)
 			{
 				std::cout << &packet.m_packet_->data << std::endl;
 			};
@@ -37,7 +37,7 @@ namespace Eclipse
 			peerInterface->Startup(1, &sd, 1);
 
 			auto res = peerInterface->Connect(ip, PORT, nullptr, 0);
-			
+
 			if (res != RakNet::CONNECTION_ATTEMPT_STARTED)
 			{
 				std::cout << "failed to connect: error number " << res << std::endl;
@@ -75,7 +75,6 @@ namespace Eclipse
 
 		void EclipseClient::Update()
 		{
-			
 			HandleNetworkMessages();
 		}
 	}
