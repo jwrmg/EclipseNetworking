@@ -1,12 +1,9 @@
 #pragma once
-#include <vector>
 #include <RakNetTypes.h>
 #include <BitStream.h>
-#include <RakPeerInterface.h>
 #include <PacketPriority.h>
-#include <ReliabilityLayer.h>
 
-#include "EclipseEngine/include/EngineMacros.h"
+#include <EclipseEngine/include/EngineMacros.h>
 
 namespace Eclipse
 {
@@ -15,14 +12,25 @@ namespace Eclipse
 		class EclipsePacket
 		{
 		public:
-			unsigned char categoryId_ = -1;
-			u_short specialId_ = -1;
-			bool async = false;
 			RakNet::Packet* m_packet_ = nullptr;
 			std::shared_ptr<RakNet::BitStream> stream_ = nullptr;
 
+			// allows for 65 535 identifiers.
+			unsigned short specializationIdentifier = -1;
+
+			// allows for 255 identifiers.
+			unsigned char coreIdentifier = -1;
+
+			// not used
+			bool async = false;
+
+			// signifies if a specialization identifier has been used.
+			bool usingSpecializationIdentifier{};
+
 			PacketPriority priority = LOW_PRIORITY;
 			PacketReliability reliability = RELIABLE;
+
+			void Init();
 
 			template<typename T>
 			void Write(T data)
@@ -45,8 +53,7 @@ namespace Eclipse
 				stream_->Read<T>(data);
 				return data;
 			}
-		
-			
+
 			EclipsePacket(RakNet::Packet* packet);
 			EclipsePacket(unsigned char categoryId);
 			EclipsePacket(unsigned char categoryId, u_short specialId);

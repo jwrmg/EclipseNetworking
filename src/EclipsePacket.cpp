@@ -4,42 +4,47 @@ namespace Eclipse
 {
 	namespace Networking
 	{
+		void EclipsePacket::Init()
+		{
+			coreIdentifier = Read<unsigned char>();
+			if ((usingSpecializationIdentifier = Read<bool>()))
+			{
+				specializationIdentifier = Read<unsigned short>();
+			}
+		}
+
 		EclipsePacket::EclipsePacket(RakNet::Packet* packet)
 		{
 			m_packet_ = packet;
-			categoryId_ = packet->data[0];
-
+			// cannot verify if there is a specialization identifier, therefore only coreIdentifier is set here.
+			coreIdentifier = packet->data[0];
 			stream_ = std::make_shared<RakNet::BitStream>(packet->data, packet->length, true);
 		}
 
 		EclipsePacket::EclipsePacket(unsigned char categoryId)
 		{
-			categoryId_ = categoryId;
+			coreIdentifier = categoryId;
 			stream_ = std::make_shared<RakNet::BitStream>();
 
-			Write<unsigned char>(categoryId_);
-			//Write<bool>(false);
+			Write<unsigned char>(coreIdentifier);
 		}
 
 		EclipsePacket::EclipsePacket(unsigned char categoryId, u_short specialId)
 		{
-			categoryId_ = categoryId;
-			specialId_ = specialId;
+			coreIdentifier = categoryId;
+			specializationIdentifier = specialId;
 			stream_ = std::make_shared<RakNet::BitStream>();
 
-			Write<unsigned char>(categoryId_);
-			//Write<bool>(true);
-			//Write<u_short>(specialId_);
+			// write the packet id.
+			Write<unsigned char>(coreIdentifier);
+			Write <u_short>(specialId);
 		}
-
 		EclipsePacket::EclipsePacket(const EclipsePacket& other)
 		{
-			categoryId_ = other.categoryId_;
-			specialId_ = other.specialId_;
+			coreIdentifier = other.coreIdentifier;
+			specializationIdentifier = other.specializationIdentifier;
 			m_packet_ = other.m_packet_;
 			stream_ = other.stream_;
-
-			//stream_.SetData(other.stream_.GetData());
 		}
 	}
 }
