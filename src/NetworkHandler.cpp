@@ -8,48 +8,28 @@ namespace Eclipse
 	{
 		void NetworkHandler::InitializeHandler()
 		{
-			for (unsigned int i = 0; i < (unsigned int)NetworkIdentifiers::EID_USER_PACKET_ENUM; i++)
+			for (unsigned char i = 0; i < (unsigned char)EID_USER_PACKET_ENUM; i++)
 			{
-				OnPacketReceived.emplace(i, new Engine::EclipseEvent<EclipsePacket&>);
-				OnPacketSent.emplace(i, new Engine::EclipseEvent<EclipsePacket&>);
+				OnPacketReceived.AddEvent(i, new Engine::EclipseEvent<EclipsePacket&>);
+				OnPacketSent.AddEvent(i, new Engine::EclipseEvent<EclipsePacket&>);
 			}
+
+			*OnPacketReceived[EID_SPECIALIZATION] += [this](auto packet) {this->_handleSpecializedPacket(packet); };
 		}
 
 		void NetworkHandler::Receive(EclipsePacket& packet)
 		{
-			// scope to this.
-			EclipsePacket pkt = packet;
-			// get identifier of the packet.
-			int id = pkt.categoryId_;
+			packet.coreIdentifier = packet.Read<unsigned char>();
+
 			// invoke identifiers event.
-			OnPacketReceived[id]->Invoke(packet);
+			OnPacketReceived[packet.coreIdentifier]->Invoke(packet);
 		}
 
-		Engine::EclipseEvent<EclipsePacket&>* NetworkHandler::GetReceivedHandle(unsigned id)
+		void NetworkHandler::_handleSpecializedPacket(EclipsePacket& packet)
 		{
-			return OnPacketReceived[id];
-		}
+			packet.specializationIdentifier = packet.Read<u_short>();
 
-		Engine::EclipseEvent<EclipsePacket&>* NetworkHandler::GetSentHandle(unsigned id)
-		{
-			return OnPacketSent[id];
-		}
-
-		unsigned NetworkHandler::GenDynID()
-		{
-			if (_idCount < (int)ID_USER_PACKET_ENUM)
-			{
-				_idCount = (int)ID_USER_PACKET_ENUM;
-			}
-			_dynIdCount++;
-			return _idCount++;
-		}
-
-		unsigned NetworkHandler::GenDynID(const std::string& hashName)
-		{
-			unsigned int id = GenDynID();
-			namedDynKeys.emplace(hashName, id);
-			return id;
+			OnSpecialPacketReceived[packet.specializationIdentifier]->Invoke(packet);
 		}
 	}
 }
