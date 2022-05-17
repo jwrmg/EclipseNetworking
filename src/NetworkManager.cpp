@@ -3,6 +3,7 @@ namespace Eclipse
 {
 	namespace Networking
 	{
+
 		NetworkManager* NetworkManager::Instance = nullptr;
 
 		void NetworkManager::onIncomingConnection(EclipsePacket& packet) {}
@@ -33,9 +34,9 @@ namespace Eclipse
 		void NetworkManager::InitializeDefaultHandles()
 		{
 			// initialize override handles.
-			*handler.GetReceivedHandle(ID_NEW_INCOMING_CONNECTION) += [this](auto packet) {this->_onIncomingConnection(packet); };
-			*handler.GetReceivedHandle(ID_DISCONNECTION_NOTIFICATION) += [this](auto packet) {this->_onIncomingDisconnection(packet); };
-			*handler.GetReceivedHandle(ID_CONNECTION_LOST) += [this](auto packet) {this->_onConnectionLost(packet); };
+			*handler.OnPacketReceived[ID_NEW_INCOMING_CONNECTION] += [this](auto packet) {this->_onIncomingConnection(packet); };
+			*handler.OnPacketReceived[ID_DISCONNECTION_NOTIFICATION] += [this](auto packet) {this->_onIncomingDisconnection(packet); };
+			*handler.OnPacketReceived[ID_CONNECTION_LOST] += [this](auto packet) {this->_onConnectionLost(packet); };
 		}
 
 		void NetworkManager::_onIncomingConnection(EclipsePacket& packet)
