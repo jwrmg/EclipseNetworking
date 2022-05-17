@@ -1,6 +1,7 @@
 #pragma once
 #include <EclipseEngine/include/Component.h>
 #include <EclipseEngine/include/EclipseEvent.h>
+#include <EclipseEngine/include/EventCollection.h>
 #include <RakPeerInterface.h>
 
 #include "NetworkHandler.h"
@@ -21,7 +22,6 @@ namespace Eclipse
 			public Components::Component
 		{
 		public:
-
 			// singleton instance.
 			static NetworkManager* Instance;
 
