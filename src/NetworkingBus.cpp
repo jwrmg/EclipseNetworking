@@ -1,3 +1,4 @@
+
 #include <EclipseEngine/include/Core.h>
 
 #include "NetworkingBus.h"
@@ -11,6 +12,8 @@ namespace Eclipse
 		{
 			if (!Instance)
 				Instance = this;
+
+			networkTimer = sentFrequency;
 		}
 		void NetworkingBus::Deleted()
 		{
@@ -19,7 +22,10 @@ namespace Eclipse
 
 		void NetworkingBus::Update()
 		{
-			SendBufferedPackets();
+			networkTimer.Step();
+
+			if (networkTimer.Ready())
+				SendBufferedPackets();
 		}
 
 		void NetworkingBus::SendPacketImmediate(NetworkCall& call)
@@ -40,6 +46,11 @@ namespace Eclipse
 				return;
 			}
 			networkBuffer.push(call);
+		}
+
+		void NetworkingBus::SetSentPacketFrequency(float frequencyInMs)
+		{
+			networkTimer.SetDelay(frequencyInMs);
 		}
 
 		void NetworkingBus::SendBufferedPackets()
