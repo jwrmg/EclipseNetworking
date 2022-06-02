@@ -4,60 +4,53 @@
 
 namespace Eclipse
 {
-	namespace Networking
-	{
-		void NetworkClient::SendToServer(const EclipsePacket* packet, char orderingChannel, uint32_t forceReceiptNumber)
-		{
-			networkInterfaceInstance->Send(packet->stream_.get(), packet->priority, packet->reliability, orderingChannel, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true, forceReceiptNumber);
-		}
+    namespace Networking
+    {
+        void NetworkClient::SendToServer(EclipsePacket* packet, char orderingChannel, uint32_t forceReceiptNumber)
+        {
+            SendPacket(packet, orderingChannel, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true, forceReceiptNumber);
+            //interfaceKey->Send(packet->stream_.get(), packet->priority, packet->reliability, orderingChannel, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true, forceReceiptNumber);
+        }
 
-		void NetworkClient::StartProcess()
-		{
-			StartProcess(networkAddress);
-		}
+        void NetworkClient::StartProcess()
+        {
+            StartProcess(networkAddress);
+        }
 
-		void NetworkClient::StopProcess()
-		{
-			networkInterfaceInstance->CloseConnection(hostServer, true);
-		}
+        void NetworkClient::StopProcess()
+        {
+            NetworkService::GetInstance()->CloseInterface(interfaceKey, hostServer, true);
+        }
 
-		int32_t NetworkClient::GetConnectionCount()
-		{
-			return networkInterfaceInstance ? networkInterfaceInstance->NumberOfConnections() : -1;
-		}
+        int32_t NetworkClient::GetConnectionCount()
+        {
+            return interfaceKey != -1 ? static_cast<int>(NetworkService::GetInstance()->GetConnectionCount(interfaceKey)) : -1;
+        }
 
-		void NetworkClient::StartProcess(const std::string& uri)
-		{
-			// create socket.
-			RakNet::SocketDescriptor socket;
+        void NetworkClient::StartProcess(const std::string& uri)
+        {
+            // create socket.
+            RakNet::SocketDescriptor socket;
 
-			// initialize packet handler.
-			handler.InitializeHandler();
+            // initialize packet handler.
+            handler.InitializeHandler();
 
-			// initialize default handles. (optional)
-			InitializeDefaultHandles();
+            // initialize default handles. (optional)
+            InitializeDefaultHandles();
 
-			// get peer interface.
-			networkInterfaceInstance = RakNet::RakPeerInterface::GetInstance();
+            // get peer interface.
+            interfaceKey = NetworkService::GetInstance()->CreateInterface();
+            if (NetworkService::GetInstance()->StartInterface(interfaceKey, 1, &socket, 1))
+            {
+                // connect to given address and port.
 
-			// try to start peer interface.
-			auto startupResult = networkInterfaceInstance->Startup(1, &socket, 1);
-			if (startupResult != RakNet::RAKNET_STARTED)
-			{
-				External::Debug::DebugAPI::Error(("Failed to start client. error code: " + std::to_string(startupResult)).c_str());
-				return;
-			}
-			// connect to given address and port.
-			auto connectionResult = networkInterfaceInstance->Connect(uri.c_str(), networkPort, nullptr, 0);
-			if (connectionResult != RakNet::CONNECTION_ATTEMPT_STARTED)
-			{
-				External::Debug::DebugAPI::Error(("Failed to connect to server: " + networkAddress + ":" + std::to_string(networkPort) + ". error code: " + std::to_string(startupResult)).c_str());
-				return;
-			}
+                if (NetworkService::GetInstance()->ConnectInterface(interfaceKey, uri.c_str(), networkPort, nullptr, 0))
+                {
+                    hostServer = RakNet::SystemAddress(uri.c_str());
+                }
+            }
+        }
 
-			hostServer = RakNet::SystemAddress(uri.c_str());
-		}
-
-		void NetworkClient::Reset(){}
-	}
+        void NetworkClient::Reset() {}
+    }
 }
