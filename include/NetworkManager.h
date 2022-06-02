@@ -2,9 +2,11 @@
 #include <EclipseEngine/include/Component.h>
 #include <EclipseEngine/include/EclipseEvent.h>
 #include <EclipseEngine/include/EventCollection.h>
+
 #include <RakPeerInterface.h>
 
 #include "NetworkHandler.h"
+#include "NetworkService.h"
 
 namespace Eclipse
 {
@@ -26,16 +28,16 @@ namespace Eclipse
 			static NetworkManager* Instance;
 
 			// Default Types
-			bool isNetworkActive;
+			bool isNetworkActive = false;
 			std::string networkAddress = "localhost";
 			unsigned short networkPort = 0;
 
 			// Eclipse Types
-			NetworkManagerType networkManagerType;
+			NetworkManagerType networkManagerType = NetworkManagerType::Offline;
 			NetworkHandler handler;
 
 			// RakNet Types
-			RakNet::RakPeerInterface* networkInterfaceInstance = nullptr;
+			InterfaceKey interfaceKey = -1;
 
 			// Eclipse Events
 			Engine::EclipseEvent<EclipsePacket&> OnClientJoin = {};
@@ -43,7 +45,7 @@ namespace Eclipse
 			Engine::EclipseEvent<EclipsePacket&> OnStart = {};
 			Engine::EclipseEvent<EclipsePacket&> OnStop = {};
 
-			void SendPacket(const EclipsePacket* packet, char orderingChannel, const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber) const;
+			void SendPacket(EclipsePacket* packet, char orderingChannel, const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber) const;
 
 			virtual void StartProcess() = 0;
 			virtual void StopProcess() = 0;
