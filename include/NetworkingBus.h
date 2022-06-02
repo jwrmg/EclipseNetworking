@@ -5,6 +5,7 @@
 #include <RakPeerInterface.h>
 
 #include "EclipsePacket.h"
+#include "NetworkService.h"
 
 namespace Eclipse
 {
@@ -12,12 +13,16 @@ namespace Eclipse
     {
         struct NetworkCall
         {
+            NetworkCall(const EclipsePacket& packet, InterfaceKey senderKey,
+                const RakNet::SystemAddress& address, uint32_t force_receipt_number, char ordering_channel,
+                bool broadcast);
+
             // data to be sent
-            EclipsePacket& packet;
+            EclipsePacket packet;
             // network sender.
-            RakNet::RakPeerInterface* sender = nullptr;
+            InterfaceKey sender = -1;
             // recipient address
-            RakNet::SystemAddress& address;
+            const RakNet::SystemAddress& address;
             uint32_t forceReceiptNumber;
             char orderingChannel;
             bool broadcast;
@@ -35,25 +40,26 @@ namespace Eclipse
              * \brief This will immediately send the network call to the recipient.
              * \param call network call to be sent.
              */
-            void SendPacketImmediate(NetworkCall& call);
+            void SendPacketImmediate(NetworkCall* call);
             /**
              * \brief This will buffer the call to be sent at a later point in the frame.
              * \param call network call to be sent
              */
-            void SendPacket(const NetworkCall& call);
+            void SendPacket(NetworkCall* call);
 
             // default = 100ms. or 0.1s.
             void SetSentPacketFrequency(float frequencyInMs);
 
-            static NetworkingBus* Instance;
+            static NetworkingBus* GetInstance(const std::string& function = "");
         private:
+            static NetworkingBus* Instance;
             /**
              * \brief This will send all buffered packets.
              */
             void SendBufferedPackets();
-            void _sendPacket(EclipsePacket* packet, RakNet::RakPeerInterface* sender, char orderingChannel,
+            void _sendPacket(EclipsePacket* packet, InterfaceKey senderKey, char orderingChannel,
                 const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber);
-            std::queue<NetworkCall> networkBuffer = {};
+            std::queue<NetworkCall*> networkBuffer = {};
             int packetsSentLastFrame = 0;
             int packetSentDelta = 0;
 
