@@ -9,13 +9,13 @@ namespace Eclipse
     {
         NetworkManager* NetworkManager::Instance = nullptr;
 
-        void NetworkManager::onIncomingConnection(EclipsePacket& packet) {}
+        void NetworkManager::onIncomingConnection(NetworkPacket& packet) {}
 
-        void NetworkManager::onIncomingDisconnection(EclipsePacket& packet) {}
+        void NetworkManager::onIncomingDisconnection(NetworkPacket& packet) {}
 
-        void NetworkManager::onConnectionLost(EclipsePacket& packet) {}
+        void NetworkManager::onConnectionLost(NetworkPacket& packet) {}
 
-        void NetworkManager::SendPacket(EclipsePacket* packet, char orderingChannel, const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber) const
+        void NetworkManager::SendPacket(NetworkPacket* packet, char orderingChannel, const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber) const
         {
             NetworkingBus::GetInstance()->SendPacket(new NetworkCall(*packet, interfaceKey, systemIdentifier, forceReceiptNumber, orderingChannel, broadcast));
             //interfaceKey->Send(packet->stream_.get(), packet->priority, packet->reliability, orderingChannel, systemIdentifier, broadcast, forceReceiptNumber);
@@ -38,7 +38,7 @@ namespace Eclipse
                 networkInterface->DeallocatePacket(packet),
                 packet = networkInterface->Receive())
             {
-                handler.Receive(EclipsePacket(packet));
+                handler.Receive(NetworkPacket(packet));
             }
         }
 
@@ -50,19 +50,19 @@ namespace Eclipse
             *handler.OnPacketReceived[ID_CONNECTION_LOST] += [this](auto packet) {this->_onConnectionLost(packet); };
         }
 
-        void NetworkManager::_onIncomingConnection(EclipsePacket& packet)
+        void NetworkManager::_onIncomingConnection(NetworkPacket& packet)
         {
             onIncomingConnection(packet);
             OnClientJoin.Invoke(packet);
         }
 
-        void NetworkManager::_onIncomingDisconnection(EclipsePacket& packet)
+        void NetworkManager::_onIncomingDisconnection(NetworkPacket& packet)
         {
             onIncomingDisconnection(packet);
             OnClientLeave.Invoke(packet);
         }
 
-        void NetworkManager::_onConnectionLost(EclipsePacket& packet)
+        void NetworkManager::_onConnectionLost(NetworkPacket& packet)
         {
             onConnectionLost(packet);
             OnClientLeave.Invoke(packet);

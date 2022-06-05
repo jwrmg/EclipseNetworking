@@ -7,7 +7,7 @@ namespace Eclipse
     {
         NetworkingBus* NetworkingBus::Instance = nullptr;
 
-        NetworkCall::NetworkCall(const EclipsePacket& packet, InterfaceKey senderKey,
+        NetworkCall::NetworkCall(const NetworkPacket& packet, InterfaceKey senderKey,
             const RakNet::SystemAddress& address, uint32_t forceReceiptNumber, char orderingChannel, bool broadcast) : packet(packet), sender(senderKey), address(address), forceReceiptNumber(forceReceiptNumber), orderingChannel(orderingChannel), broadcast(broadcast)
         {
         }
@@ -123,7 +123,7 @@ namespace Eclipse
             packetsSentLastFrame = sentPackets;
         }
 
-        void NetworkingBus::_sendPacket(EclipsePacket* packet, InterfaceKey senderKey, char orderingChannel,
+        void NetworkingBus::_sendPacket(NetworkPacket* packet, InterfaceKey senderKey, char orderingChannel,
             const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber)
         {
             if (!INSTANCE_CHECK)

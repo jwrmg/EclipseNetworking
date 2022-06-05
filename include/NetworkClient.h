@@ -9,7 +9,7 @@ namespace Eclipse
 			public NetworkManager
 		{
 		public:
-			void SendToServer(EclipsePacket* packet, char orderingChannel, uint32_t forceReceiptNumber);
+			void SendToServer(NetworkPacket* packet, char orderingChannel, uint32_t forceReceiptNumber);
 
 			void StartProcess() override;
 			void StartProcess(const std::string& uri);

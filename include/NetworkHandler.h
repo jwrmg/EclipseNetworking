@@ -5,7 +5,7 @@
 #include <MessageIdentifiers.h>
 #include <EclipseEngine/include/EclipseEvent.h>
 #include <EclipseEngine/include/EventCollection.h>
-#include "EclipsePacket.h"
+#include "NetworkPacket.h"
 
 namespace Eclipse
 {
@@ -15,15 +15,15 @@ namespace Eclipse
 		{
 		public:
 			void InitializeHandler();
-			void Receive(EclipsePacket& packet);
+			void Receive(NetworkPacket& packet);
 
-			Engine::EventCollection<unsigned char, EclipsePacket&> OnPacketReceived;
-			Engine::EventCollection<unsigned char, EclipsePacket&> OnPacketSent;
-			Engine::EventCollection<unsigned short, EclipsePacket&> OnSpecialPacketReceived;
-			Engine::EventCollection<unsigned short, EclipsePacket&> OnSpecialPacketSent;
+			Engine::EventCollection<unsigned char, NetworkPacket&> OnPacketReceived;
+			Engine::EventCollection<unsigned char, NetworkPacket&> OnPacketSent;
+			Engine::EventCollection<unsigned short, NetworkPacket&> OnSpecialPacketReceived;
+			Engine::EventCollection<unsigned short, NetworkPacket&> OnSpecialPacketSent;
 
 		private:
-			void _handleSpecializedPacket(EclipsePacket& packet);
+			void _handleSpecializedPacket(NetworkPacket& packet);
 
 			std::unordered_map<std::string, unsigned int> namedDynKeys = {};
 

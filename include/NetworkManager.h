@@ -40,12 +40,12 @@ namespace Eclipse
 			InterfaceKey interfaceKey = -1;
 
 			// Eclipse Events
-			Engine::EclipseEvent<EclipsePacket&> OnClientJoin = {};
-			Engine::EclipseEvent<EclipsePacket&> OnClientLeave = {};
-			Engine::EclipseEvent<EclipsePacket&> OnStart = {};
-			Engine::EclipseEvent<EclipsePacket&> OnStop = {};
+			Engine::EclipseEvent<NetworkPacket&> OnClientJoin = {};
+			Engine::EclipseEvent<NetworkPacket&> OnClientLeave = {};
+			Engine::EclipseEvent<NetworkPacket&> OnStart = {};
+			Engine::EclipseEvent<NetworkPacket&> OnStop = {};
 
-			void SendPacket(EclipsePacket* packet, char orderingChannel, const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber) const;
+			void SendPacket(NetworkPacket* packet, char orderingChannel, const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber) const;
 
 			virtual void StartProcess() = 0;
 			virtual void StopProcess() = 0;
@@ -56,15 +56,15 @@ namespace Eclipse
 			// returns the amount of connected clients to the server.
 		protected:
 			virtual int32_t GetConnectionCount() = 0;
-			virtual void onIncomingConnection(EclipsePacket& packet);
-			virtual void onIncomingDisconnection(EclipsePacket& packet);
-			virtual void onConnectionLost(EclipsePacket& packet);
+			virtual void onIncomingConnection(NetworkPacket& packet);
+			virtual void onIncomingDisconnection(NetworkPacket& packet);
+			virtual void onConnectionLost(NetworkPacket& packet);
 			void InitializeDefaultHandles();
 
 		private:
-			void _onIncomingConnection(EclipsePacket& packet);
-			void _onIncomingDisconnection(EclipsePacket& packet);
-			void _onConnectionLost(EclipsePacket& packet);
+			void _onIncomingConnection(NetworkPacket& packet);
+			void _onIncomingDisconnection(NetworkPacket& packet);
+			void _onConnectionLost(NetworkPacket& packet);
 		protected:
 			void Reset() override;
 			void Deleted() final;

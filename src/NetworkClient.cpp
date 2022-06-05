@@ -6,10 +6,9 @@ namespace Eclipse
 {
     namespace Networking
     {
-        void NetworkClient::SendToServer(EclipsePacket* packet, char orderingChannel, uint32_t forceReceiptNumber)
+        void NetworkClient::SendToServer(NetworkPacket* packet, char orderingChannel, uint32_t forceReceiptNumber)
         {
             SendPacket(packet, orderingChannel, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true, forceReceiptNumber);
-            //interfaceKey->Send(packet->stream_.get(), packet->priority, packet->reliability, orderingChannel, RakNet::UNASSIGNED_SYSTEM_ADDRESS, true, forceReceiptNumber);
         }
 
         void NetworkClient::StartProcess()

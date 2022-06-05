@@ -7,7 +7,7 @@ namespace Eclipse
     {
         void NetworkServer::Reset() {}
 
-        void NetworkServer::onConnectionLost(EclipsePacket& packet)
+        void NetworkServer::onConnectionLost(NetworkPacket& packet)
         {
             auto addressToRemove = packet.m_packet_->systemAddress;
             if (_removeConnection(addressToRemove))
@@ -21,14 +21,14 @@ namespace Eclipse
             }
         }
 
-        void NetworkServer::onIncomingConnection(EclipsePacket& packet)
+        void NetworkServer::onIncomingConnection(NetworkPacket& packet)
         {
             auto addressToAdd = packet.m_packet_->systemAddress;
             _addConnection(addressToAdd);
             External::Debug::DebugAPI::Debug(std::string(addressToAdd.ToString()) + " successfully connected");
         }
 
-        void NetworkServer::onIncomingDisconnection(EclipsePacket& packet)
+        void NetworkServer::onIncomingDisconnection(NetworkPacket& packet)
         {
             auto addressToRemove = packet.m_packet_->systemAddress;
             if (_removeConnection(addressToRemove))
@@ -42,7 +42,7 @@ namespace Eclipse
             }
         }
 
-        void NetworkServer::SendPacketToAll(EclipsePacket* packet, char orderingChannel, bool broadcast,
+        void NetworkServer::SendPacketToAll(NetworkPacket* packet, char orderingChannel, bool broadcast,
             uint32_t forceReceiptNumber, std::vector<RakNet::SystemAddress> filters) const
         {
             for (const RakNet::SystemAddress& client : ConnectedClients)

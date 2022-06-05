@@ -4,7 +4,7 @@
 #include <EclipseEngine/include/EclipseTimer.h>
 #include <RakPeerInterface.h>
 
-#include "EclipsePacket.h"
+#include "NetworkPacket.h"
 #include "NetworkService.h"
 
 namespace Eclipse
@@ -13,12 +13,12 @@ namespace Eclipse
     {
         struct NetworkCall
         {
-            NetworkCall(const EclipsePacket& packet, InterfaceKey senderKey,
+            NetworkCall(const NetworkPacket& packet, InterfaceKey senderKey,
                 const RakNet::SystemAddress& address, uint32_t force_receipt_number, char ordering_channel,
                 bool broadcast);
 
             // data to be sent
-            EclipsePacket packet;
+            NetworkPacket packet;
             // network sender.
             InterfaceKey sender = -1;
             // recipient address
@@ -57,7 +57,7 @@ namespace Eclipse
              * \brief This will send all buffered packets.
              */
             void SendBufferedPackets();
-            void _sendPacket(EclipsePacket* packet, InterfaceKey senderKey, char orderingChannel,
+            void _sendPacket(NetworkPacket* packet, InterfaceKey senderKey, char orderingChannel,
                 const RakNet::SystemAddress& systemIdentifier, bool broadcast, uint32_t forceReceiptNumber);
             std::queue<NetworkCall*> networkBuffer = {};
             int packetsSentLastFrame = 0;

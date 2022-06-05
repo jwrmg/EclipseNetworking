@@ -12,15 +12,15 @@ namespace Eclipse
 
             unsigned short maxConnections = 32;
 
-            void SendPacketToAll(EclipsePacket* packet, char orderingChannel, bool broadcast, uint32_t forceReceiptNumber, std::vector<RakNet::SystemAddress> filter = {}) const;
+            void SendPacketToAll(NetworkPacket* packet, char orderingChannel, bool broadcast, uint32_t forceReceiptNumber, std::vector<RakNet::SystemAddress> filter = {}) const;
 
             void StartProcess() override;
             void StopProcess() override;
         protected:
             void Reset() override;
-            void onConnectionLost(EclipsePacket& packet) override;
-            void onIncomingConnection(EclipsePacket& packet) override;
-            void onIncomingDisconnection(EclipsePacket& packet) override;
+            void onConnectionLost(NetworkPacket& packet) override;
+            void onIncomingConnection(NetworkPacket& packet) override;
+            void onIncomingDisconnection(NetworkPacket& packet) override;
             int32_t GetConnectionCount() override;
         private:
             bool _removeConnection(RakNet::SystemAddress address);
