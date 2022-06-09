@@ -63,7 +63,7 @@ namespace Eclipse
             int packetsSentLastFrame = 0;
             int packetSentDelta = 0;
 
-            float sentFrequency = 100.0f;
+            float sentFrequency = 1.0f;
             Engine::EclipseTimer networkTimer = sentFrequency;
         };
     }
